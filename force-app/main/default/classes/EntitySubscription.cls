@@ -4,14 +4,14 @@ public class EntitySubscription {
     // Access the running user id from the UserInfo class
     String userId = UserInfo.getUserId();
 
-    // Query entity subscriptions
+    // Query entity subscriptions for the running user
     List<SObject> queryList = [
       SELECT Id, ParentId, CreatedById
       FROM EntitySubscription
       WHERE CreatedById = :userId
       ORDER BY ParentId
     ];
-    //System.debug('queryList >> ' + queryList);
+    //System.debug('queryList: ' + queryList);
 
     // Group ParentIds by SObject type
     Map<String, List<Id>> parentIdMap = new Map<String, List<Id>>();
@@ -26,7 +26,7 @@ public class EntitySubscription {
       }
       parentIdMap.get(objectName).add(parentId);
 
-      //System.debug('parentIdMap >> ' + parentIdMap);
+      //System.debug('parentIdMap: ' + parentIdMap);
     }
 
     // Try to query name from each type
@@ -35,7 +35,7 @@ public class EntitySubscription {
       String query;
       List<SObject> results;
 
-      // Attempt to select common name fields
+      // Attempt to select common name fields. If name is not found, catch the exception and check for case fields
       try {
         query = 'SELECT Id, Name FROM ' + objectType + ' WHERE Id IN :ids';
         results = Database.query(query);
@@ -52,7 +52,7 @@ public class EntitySubscription {
           continue;
         }
       }
-      System.debug('results >>' + results);
+      System.debug('results:' + results);
     }
   }
 }
