@@ -1,6 +1,6 @@
 public class EntitySubscription {
   // Method to get a list of entity subscriptions
-  public static void getListOfSubscriptions() {
+  public static List<SObject> getListOfSubscriptions() {
     // Access the running user id from the UserInfo class
     String userId = UserInfo.getUserId();
 
@@ -11,7 +11,6 @@ public class EntitySubscription {
       WHERE CreatedById = :userId
       ORDER BY ParentId
     ];
-    //System.debug('queryList: ' + queryList);
 
     // Group ParentIds by SObject type
     Map<String, List<Id>> parentIdMap = new Map<String, List<Id>>();
@@ -25,8 +24,6 @@ public class EntitySubscription {
         parentIdMap.put(objectName, new List<Id>());
       }
       parentIdMap.get(objectName).add(parentId);
-
-      //System.debug('parentIdMap: ' + parentIdMap);
     }
 
     // Try to query name from each type
@@ -40,7 +37,6 @@ public class EntitySubscription {
         query = 'SELECT Id, Name FROM ' + objectType + ' WHERE Id IN :ids';
         results = Database.query(query);
       } catch (QueryException e1) {
-        System.debug('e1');
         try {
           query =
             'SELECT Id, CaseNumber, Subject FROM ' +
@@ -48,11 +44,14 @@ public class EntitySubscription {
             ' WHERE Id IN :ids';
           results = Database.query(query);
         } catch (QueryException e2) {
-          System.debug('Skipping unsupported object type: ' + objectType);
+          System.debug('Skipping unsupported object type: ' +objectType);
           continue;
         }
       }
-      System.debug('results:' + results);
+      subscriptionList.addAll(results);
     }
+
+    // Return the list of subscriptions
+    return subscriptionList;
   }
 }

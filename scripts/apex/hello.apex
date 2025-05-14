@@ -7,3 +7,4 @@
 
 EntitySubscription subs = new EntitySubscription();
 EntitySubscription.getListOfSubscriptions();
+System.debug(EntitySubscription.getListOfSubscriptions());
