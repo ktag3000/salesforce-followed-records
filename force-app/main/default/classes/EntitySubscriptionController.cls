@@ -26,10 +26,12 @@ public class EntitySubscriptionController {
     }
     objectMap.get(objectName).add(objectId);
   }
-  System.debug(objectMap);
-
+  System.debug('Object map: ' +objectMap);
+  System.debug('Object map key set: ' +objectMap.keySet());
+  System.debug('Object map values: ' +objectMap.values());
+  
   // Query fields to be displayed to the user. Name field for most but handle the execptions if the object does not (ie Case).
- 
+
 
   }
 }
